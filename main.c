@@ -77,6 +77,7 @@ int main()
     int port = port_str ? atoi(port_str) : 8000;  // fallback if PORT not set
     printf("Server starting on port %d...\n", port);
     int server_fd = ws_create_server(port);
+    printf("Server created with socket: %d\n", server_fd);
     if (server_fd < 0)
     {
         perror("Server creation failed");
