@@ -65,7 +65,10 @@ void wait_for_second_player(int server_fd, int *player2_fd)
     printf("Waiting for Player 2...\n");
     *player2_fd = ws_accept_client(server_fd);
     if (!ws_handshake(*player2_fd))
+    {
+        printf("Handshake failed for Player 2.\n");
         return;
+    }
     ws_send(*player2_fd, "You are Player O", 16);
     printf("New Player O socket: %d\n", *player2_fd);
     send_board(current_turn == 0 ? *player2_fd : *player2_fd, *player2_fd);
@@ -91,7 +94,7 @@ int main()
     {
         printf("Handshake failed for Player 1.\n");
         close(client1);
-        return 1;
+        continue;
     }
     ws_send(client1, "You are Player X", 16);
     printf("Player X socket: %d\n", client1);
