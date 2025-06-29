@@ -73,7 +73,8 @@ void wait_for_second_player(int server_fd, int *player2_fd)
 
 int main()
 {
-    int server_fd = ws_create_server(8000);
+    int port = atoi(getenv("PORT"));
+    int server_fd = ws_create_server(port);
     if (server_fd < 0)
     {
         perror("Server creation failed");
