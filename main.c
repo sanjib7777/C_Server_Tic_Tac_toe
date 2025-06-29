@@ -86,10 +86,11 @@ int main()
 
     printf("Waiting for Player 1...\n");
     int client1 = ws_accept_client(server_fd);
+    printf("Player 1 connected with socket: %d\n", client1);
     if (!ws_handshake(client1))
         return 1;
     ws_send(client1, "You are Player X", 16);
-
+    printf("Player X socket: %d\n", client1);
     int client2 = -1;
     wait_for_second_player(server_fd, &client2);
 
