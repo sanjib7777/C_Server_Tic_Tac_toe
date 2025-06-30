@@ -30,7 +30,7 @@ int ws_create_server(int port) {
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = INADDR_ANY;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servaddr.sin_port = htons(port);
 
     if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
