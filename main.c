@@ -63,23 +63,13 @@ int check_draw() {
 void wait_for_second_player(int server_fd, int *player2_fd)
 {
     printf("Waiting for Player 2...\n");
-
-    while (1) {
-        int new_fd = ws_accept_client(server_fd);
-        if (!ws_handshake(new_fd)) {
-            printf("Handshake failed for Player 2. Retrying...\n");
-            close(new_fd);
-            continue;  // Retry until handshake succeeds
-        }
-
-        *player2_fd = new_fd;
-        ws_send(*player2_fd, "You are Player O", 16);
-        printf("New Player O socket: %d\n", *player2_fd);
-        send_board(current_turn == 0 ? *player2_fd : *player2_fd, *player2_fd);
-        break;
-    }
+    *player2_fd = ws_accept_client(server_fd);
+    if (!ws_handshake(*player2_fd))
+        return;
+    ws_send(*player2_fd, "You are Player O", 16);
+    printf("New Player O socket: %d\n", *player2_fd);
+    send_board(current_turn == 0 ? *player2_fd : *player2_fd, *player2_fd);
 }
-
 
 int main()
 {
@@ -87,7 +77,6 @@ int main()
     int port = port_str ? atoi(port_str) : 8000;  // fallback if PORT not set
     printf("Server starting on port %d...\n", port);
     int server_fd = ws_create_server(port);
-    printf("Server created with socket: %d\n", server_fd);
     if (server_fd < 0)
     {
         perror("Server creation failed");
@@ -95,19 +84,11 @@ int main()
     }
 
     printf("Waiting for Player 1...\n");
-    int client1 = -1;
-    while (client1 == -1) {
-        int new_client = ws_accept_client(server_fd);
-        if (!ws_handshake(new_client)) {
-            printf("Handshake failed for Player 1. Retrying...\n");
-            close(new_client);
-            continue;
-        }
-        client1 = new_client;
-    }
+    int client1 = ws_accept_client(server_fd);
+    if (!ws_handshake(client1))
+        return 1;
     ws_send(client1, "You are Player X", 16);
 
-    printf("Player X socket: %d\n", client1);
     int client2 = -1;
     wait_for_second_player(server_fd, &client2);
 
