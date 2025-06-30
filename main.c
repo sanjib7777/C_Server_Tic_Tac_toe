@@ -73,10 +73,10 @@ void wait_for_second_player(int server_fd, int *player2_fd)
 
 int main()
 {
-    const char *port_str = getenv("PORT");
-    int port = port_str ? atoi(port_str) : 8000;  // fallback if PORT not set
-    printf("Server starting on port %d...\n", port);
+    int port = atoi(getenv("PORT"));  // Use the port Render assigns
     int server_fd = ws_create_server(port);
+    printf("Server starting on port %d...\n", port);
+    
     if (server_fd < 0)
     {
         perror("Server creation failed");
