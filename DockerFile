@@ -1,0 +1,17 @@
+# Dockerfile
+FROM gcc:latest
+
+# Create app folder
+WORKDIR /app
+
+# Copy source code
+COPY . .
+
+# Build server
+RUN gcc main.c -o ws-server -lssl -lcrypto
+
+# Expose port 8000 or your server's port
+EXPOSE 8000
+
+# Start command
+CMD ["./ws-server"]
